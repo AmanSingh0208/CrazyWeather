@@ -7,7 +7,7 @@ android {
     namespace = "com.example.crazyweather"
     compileSdk = 34
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 

@@ -10,7 +10,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -22,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getCity() {
         val searchView = binding.searchView
-        searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener,
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
@@ -47,14 +47,15 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun fetchWeatherData(cityName: String ) {
+    private fun fetchWeatherData(cityName: String) {
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://api.openweathermap.org/data/2.5/")
             .build().create(ApiInterface::class.java)
 
-        val response = retrofit.getWeatherData(cityName, "36beae415b282a76e5a728bbf036cd26", "metric")
-        response.enqueue(object : Callback<CrazyWeather>{
+        val response =
+            retrofit.getWeatherData(cityName, "36beae415b282a76e5a728bbf036cd26", "metric")
+        response.enqueue(object : Callback<CrazyWeather> {
             override fun onResponse(call: Call<CrazyWeather>, response: Response<CrazyWeather>) {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                     val humidity = responseBody.main.humidity.toString()
                     val maxTemp = responseBody.main.temp_max.toString().substringBefore(".")
                     val minTemp = responseBody.main.temp_min.toString().substringBefore(".")
-                    val condition = responseBody.weather.firstOrNull()?.main?: "Unknown "
+                    val condition = responseBody.weather.firstOrNull()?.main ?: "Unknown "
                     val sea = responseBody.main.sea_level.toString()
                     val wind = responseBody.wind.speed.toString()
                     val sunrise = responseBody.sys.sunrise.toLong()
@@ -101,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 binding.lottieAnimationView.setAnimation(R.raw.cloud)
             }
 
-            "Clear Sky", "Sunny","Clear" -> {
+            "Clear Sky", "Sunny", "Clear" -> {
                 binding.root.setBackgroundResource(R.drawable.sunny_background)
                 binding.lottieAnimationView.setAnimation(R.raw.sun)
             }
@@ -128,10 +129,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun getTime(timestamp: Long): String {
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return sdf.format((Date(timestamp*1000)))
+        return sdf.format((Date(timestamp * 1000)))
     }
 
-    private fun getDay(timestamp: Long): String{
+    private fun getDay(timestamp: Long): String {
         val sdf = SimpleDateFormat("EEEE", Locale.getDefault())
         return sdf.format((Date()))
     }
